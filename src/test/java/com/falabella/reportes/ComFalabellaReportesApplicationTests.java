@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.falabella.reportes.mapper.ConsultasMapper;
 import com.falabella.reportes.service.InformeService;
 
 @RunWith(SpringRunner.class)
@@ -16,11 +17,21 @@ public class ComFalabellaReportesApplicationTests {
 
 	@Autowired
 	InformeService service;
+	
+	@Autowired
+	ConsultasMapper mapper;
 	@Test
 	public void contextLoads() throws IOException {
-		String fecha = "2020-08-19";
+		
+
+		String fecha = "2020-11-20";
 		service.informe(fecha);
-		System.out.println("Test finalizado");
+		System.out.println("Test finalizado " + fecha);
+	
+	
+		
+
 	}
 
+	
 }
