@@ -21,8 +21,8 @@ public class GenerarArchivoTest {
 
 	@Test
 	public void generar() throws Exception {
-		log.info("INIT");
-		dc.generarArchivo("2020-11-12", "2020-11-12-DatacollectPRD-Part1");
+		log.info("INIT");		
+		dc.generarArchivoDiaByCursor("2020-11-21");
 		log.info("FINISH");
 
 	}

@@ -1,6 +1,10 @@
 package com.falabella.reportes.service;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.falabella.reportes.domain.datacollect.Datacollect;
 import com.falabella.reportes.mapper.ConsultasMapper;
-import com.falabella.reportes.util.Utilidades;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -29,45 +33,42 @@ public class GeneraDatacollect {
 	 * @param fecha formato yyyy-MM-dd
 	 * @throws Exception
 	 */
-	public void generarArchivo(String fecha, String nombreArchivo) throws Exception {
-		List<String> listaOrigen = mapper.getLineasByFecha(fecha);
-		StringBuilder texto = new StringBuilder();
-		int j=1;
-		for (String s : listaOrigen) {
+	@Transactional
+	public void generarArchivoDiaByCursor(String fecha) throws Exception {
+
+		Iterator<String> iterator = mapper.getLineasByFecha(fecha).iterator();
+		int j = 1;
+		String nombreArchivo = "dc" + fecha;
+		log.info("{}",nombreArchivo);
+		String ruta = "C:\\Users\\robby.moyano.toledo\\OneDrive - Accenture\\Falabella\\archivos\\" + nombreArchivo;
+
+		File file = new File(ruta);
+		// Si el archivo no existe es creado
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		while (iterator.hasNext()) {
+
 			System.out.println(j);
 			j++;
-			List<Datacollect> lista = deSerializar(s);
+			List<Datacollect> lista = deSerializar(iterator.next());
 			if (lista != null) {
-
 				List<String> data = armarbodyLinea(lista);
-
 				for (int i = 0; i < data.size(); i++) {
-					texto.append(data.get(i));
-					texto.append("\n");
-
-				}
-
-			}
-
-		}
-		Utilidades.generar(texto.toString(), nombreArchivo);
+					try {
+						bw.write(data.get(i)+"\n");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} // lineas por transacciones
+			} //fin if
+		}// fin while cursor
+		bw.close();
 	}
 
-	private void appendDatacollect(List<Datacollect> lista) throws Exception {
-
-		log.info("registros que se grabarán {}", lista.size());
-
-		List<String> data = armarbodyLinea(lista);
-
-		StringBuilder texto = new StringBuilder();
-		for (int i = 0; i < data.size(); i++) {
-			texto.append(data.get(i));
-			texto.append("\n");
-
-		}
-		//Utilidades.generar(texto.toString());
-	}
-
+	
 	/**
 	 * Método que construye una linea para ser impreza en el archivo
 	 * 

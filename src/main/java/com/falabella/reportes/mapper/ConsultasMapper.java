@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.cursor.Cursor;
 
 import com.falabella.reportes.domain.Informe;
 import com.falabella.reportes.domain.Totales;
@@ -42,6 +43,6 @@ public interface ConsultasMapper {
 	 * @return
 	 */
 	@Select("select txt_msg from pos_co_dcm where tag_fecha = #{fecha};")
-	public List<String> getLineasByFecha(String fecha);
+	public Cursor<String> getLineasByFecha(String fecha);
 	
 }
