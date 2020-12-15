@@ -32,17 +32,4 @@ public interface ConsultasMapper {
 	@Select("select cod_pay, num_cnt, q_amount, cod_store, cod_ter from pos_co_pay where dt_date = #{fecha} order by cod_pay asc, cod_ter asc ")
 	public List<Totales> getTotales(String fecha);
 	
-	
-	@Insert("insert into pos_co_test (dt_date) values (#{fecha})")
-	public void insertarFecha(Date fecha);
-	
-
-	/**
-	 * 
-	 * @param fecha en formato yyyy-MM-dd
-	 * @return
-	 */
-	@Select("select txt_msg from pos_co_dcm where tag_fecha = #{fecha};")
-	public Cursor<String> getLineasByFecha(String fecha);
-	
 }
